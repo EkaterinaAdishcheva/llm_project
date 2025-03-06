@@ -35,5 +35,6 @@ pip install -U langchain langchain-community chromadb sentence-transformers llam
 pip install sentencepiece
 pip3 install huggingface-hub
 huggingface-cli download TheBloke/LLaMA-7b-GGUF llama-7b.Q4_K_M.gguf --local-dir . --local-dir-use-symlinks False
+pip install streamlit
 
 ```
