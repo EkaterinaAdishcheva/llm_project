@@ -41,3 +41,11 @@ Neoj4
 O-jREKl7dDdF30QwMWCFVU30U0f5dtsOqn80QDjkWr4
 
 ```
+Restart ollama
+```
+apt update
+apt install -y lsof
+lsof -i :11434
+ollama serve &
+
+kill -9 1317
