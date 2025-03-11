@@ -23,7 +23,7 @@ ollama ps
 3. Run test
 ```
 pip install openai fastapi uvicorn
-pip install langchain transformers accelerate
+pip install langchain ? transformers accelerate
 pip install langchain_ollama
 ```
 
