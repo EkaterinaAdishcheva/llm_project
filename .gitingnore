@@ -1,2 +1,5 @@
 ./__pycache__
 ./chroma_db
+.ipynb_checkpoints/
+Recipe_recipes.pickle
+raw_recipes/

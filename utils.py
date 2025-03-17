@@ -7,6 +7,9 @@ import pickle
 
 from Recipe import Recipe
 
+
+
+
 def process_recipe_html(file_name):
     """
         this function scrap html files and get all features from the file
@@ -100,27 +103,36 @@ def read_recipes_pkl(file_name):
     """
     with open(file_name, 'rb') as handle:
         res = pickle.load(handle)
+
+    print(f"Collected {len(res)} recipes")
         
     return res
 
 
-def good_recipe(recipe):
+
+def  filter_recipe(recipes, max_steps = 10, max_min=120, min_rating=4, min_votes=5):
+    res = [recipe for recipe in recipes if util_select_recipe(recipe, max_steps, max_min, min_rating, min_votes)]
+    print(f"{len(res)} recipes is selected.")
+    return res
+            
+    
+
+def util_select_recipe(recipe, max_steps = 10, max_min=120, min_rating=4, min_votes=5):
     if recipe.name is None:
         return False
-    
-    if len(recipe.steps) == 0 or len(recipe.steps) >= 10:
-        return False
-    
     if len(recipe.ingridients) == 0:
         return False
     
-    if recipe.ratingValue < 4:
+    if len(recipe.steps) == 0 or len(recipe.steps) > max_steps:
+        return False    
+    
+    if recipe.ratingValue < min_rating:
         return False
 
-    if recipe.ratingCount < 3:
+    if recipe.ratingCount < min_votes:
         return False
     
-    if recipe.standard_time >= 120:
+    if recipe.standard_time >= max_min:
         return False
 
     return True
@@ -132,12 +144,10 @@ def make_recipes(recipes, output_file=None):
     for rec in recipes:
         _rec = Recipe(rec)
         _rec.standardize_time()
-        
-        if good_recipe(_rec):
-            _rec.make_document()    
-            result.append(_rec)
+        _rec.make_document()
+        result.append(_rec)
 
-    print(f"Total {len(result)} recipes is picked up")
+    print(f"Total {len(result)} recipes is processed.")
     
     if output_file is not None:
         with open(output_file, 'wb') as handle:

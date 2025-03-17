@@ -1,7 +1,7 @@
 import re
 import uuid
 from langchain_core.documents import Document
-from build_knowledge_graph import querry_graph
+from build_knowledge_graph import query_graph, ATTRIBUTES_ORDER, enreach_query_with_relative_tags
 
 def make_str(obj):
     res = ''
@@ -45,7 +45,7 @@ class Recipe:
         if self.geography is not None:
             self.geography = [tag.replace('кухня', '').strip() for tag in self.geography]
         if self.diet is not None:
-            self.diet = [tag.replace('рецепты', '').replace('питание', '').strip() for tag in self.diet]
+            self.diet = [tag.replace('рецепты', '').replace('питание', '').replace('для', '').strip() for tag in self.diet]
             
 
 
@@ -56,8 +56,7 @@ class Recipe:
         if self.diet is not None:
             if 'пп' in set(self.diet):
                 self.diet.append('полезный')
-                self.diet.append('здоровый')
-        
+                self.diet.append('здоровый')     
 
     def standardize_time(self):
         if self.time is None:
@@ -84,7 +83,10 @@ class Recipe:
 
     
     def make_str_recipe(self):
-        res = self.name + "\n\n"
+        if self.name is not None:
+            res = self.name + "\n\n"
+        else:
+            res = ""
         if self.description is not None:
             res += "\n".join(self.description) + ".\n\n"
         if self.recipeYield is not None:
@@ -116,13 +118,13 @@ class Recipe:
             
             
         self.ingridients = [None] * len(recipe['ingridients'])
-        for n, i in enumerate(recipe['ingridients']):
-            if '       ' in i[1]:
-                ii1 = i[1].split('       ')
-                ii1 = [d.strip() for d in ii1 if d != '']
-                self.ingridients[n] = (i[0]  + " " + ii1[1], ii1[0])
+        for n, ing_set in enumerate(recipe['ingridients']):
+            if '       ' in ing_set[1]:
+                ing_set_1 = ing_set[1].split('       ')
+                ing_set_1 = [d.strip() for d in ing_set_1 if d != '']
+                self.ingridients[n] = (ing_set[0].lower(), ing_set_1[0].lower(), ing_set_1[1].lower())
             else:
-                self.ingridients[n] = (i[0], i[1])
+                self.ingridients[n] = (ing_set[0].lower(), ing_set[1].lower(), None)
 
         attr_name = {
             'yield_value': 'recipeYield',
@@ -225,13 +227,34 @@ class Recipe:
             'ratingCount',]
 
 
-class RecipesProgect():
-    def __init__(self):
-        self.resipes = None
-        self.knowledgeGraph = None
-        self.tags = None
-        self.vectorStore = None
+class RecipesProject():
+    def __init__(self, resipes=None, knowledgeGraph=None, tags=None, vectorStore=None, oneWordTags=None):
         
+        if resipes is None:
+            self.resipes = None
+        else:
+            self.resipes = resipes
+        
+        if knowledgeGraph is None:
+            self.knowledgeGraph = None
+        else:
+            self.knowledgeGraph = knowledgeGraph
+        
+        if tags is None:
+            self.tags = None
+        else:
+            self.tags = tags
+            
+        if vectorStore is None:
+            self.vectorStore = None
+        else:
+            self.vectorStore = vectorStore
+                
+        if oneWordTags is None:
+            self.oneWordTags = None
+        else:
+            self.oneWordTags = oneWordTags
+
     def add_resipes_list(self, recipes_list):
         self.resipes = recipes_list
         
@@ -244,7 +267,20 @@ class RecipesProgect():
     def add_vector_store(self, vector_store):
         self.vectorSore = vector_store
         
+    def add_one_word_tags(self, one_word_tags):
+        self.oneWordTags = one_word_tags
         
-    def invoke(self, querry):
-        answer = querry_graph(querry, self.knowledgeGraph, self.tags)
+    
+    def add_one_word_tags(self, query, verbose=False):
+        new_tags = enreach_query_with_relative_tags(query, self.oneWordTags)
+        new_tags = " ".join(new_tags)
+        if verbose:
+            print(f"New tags are added: {new_tags}")
+        res = query + " " + new_tags
+        return res
+
+    def invoke(self, query, verbose=False):
+        query = self.add_one_word_tags(query, verbose=verbose)
+        answer = query_graph(query, self.knowledgeGraph, self.tags, verbose=verbose)
         return answer
+
