@@ -277,6 +277,7 @@ class RecipesProject():
         if verbose:
             print(f"New tags are added: {new_tags}")
         res = query + " " + new_tags
+        res = res.strip()
         return res
 
     def invoke(self, query, verbose=False):

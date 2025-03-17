@@ -69,14 +69,24 @@ def make_one_word_tags_list(tags):
     return res
 
 
+LEVENSTEIN_SIMILARITY_MIN = 0.5
+def levenstein_similarity_normalized(text1: str, text2: str) -> float:
+    """
+    Compute the normalized levenstein distance between two texts.
+    """
+    import nltk
+    return 1 - nltk.edit_distance(text1, text2) / max(len(text1), len(text2))
+    
+
 def enreach_query_with_relative_tags(query, one_word_tags):
     query = re.sub(PATTERNS, ' ', query.lower())
     new_tags = []
     for token in query.split():
         if token and token not in stopwords_ru:
             token = token.strip()
-            close_token = process.extractOne(token, [key for key in one_word_tags.keys()])            
-            new_tags.append(close_token[0])
+            close_token = process.extractOne(token, [key for key in one_word_tags.keys()])
+            if levenstein_similarity_normalized(token, close_token[0]) >= LEVENSTEIN_SIMILARITY_MIN:
+                new_tags.append(close_token[0])
     return new_tags
 
         
