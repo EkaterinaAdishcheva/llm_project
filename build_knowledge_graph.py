@@ -157,11 +157,11 @@ def query_graph(query, graph, tags, min_number=5, verbose=False):
     
     
     answer = set()
+    answer_new = set()
     
     for n in graph.nodes():
         if graph.nodes[n]['node_type'] == 'recipe':
             answer.add(n)
-
     for tag in tags:
         if len(set(query_lemms).intersection(set(tags[tag]['lemma'])))\
                 == len(set(tags[tag]['lemma'])):
@@ -172,6 +172,6 @@ def query_graph(query, graph, tags, min_number=5, verbose=False):
             if verbose:
                 print(f" Tag ({tag, tags[tag]}) is applied. Selected {len(answer_new)} recipes")
             if len(answer_new) < min_number:
-                break
+                return answer_new, answer
             answer = answer_new
     return answer_new, answer

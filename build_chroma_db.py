@@ -63,11 +63,12 @@ def build_chroma_db(
             chunk_size=chunk_size, chunk_overlap=chunk_overlap, length_function=length_function
     )
 
-    documents = [recipe.document for recipe in recipes_list]
+    documents = [recipe.document.replace('\t', ' ').replace('\n', ' ').replace('  ', ' ')
+                 for recipe in recipes_list]
 
     documents = text_splitter.split_documents(documents)
 
-    print(f"{len(documents)} recipes are to be loaded to chroma db")
+    print(f"{len(documents)} chunks are to be loaded to chroma db")
     if len(documents) > MAX_N_CHUNKS:
         print(f"Length {len(documents)} is exeeded max value {MAX_N_CHUNKS}")
         return None
@@ -83,12 +84,13 @@ def build_chroma_db(
     # Initialise Chroma avec le wrapper
 
     vector_store = Chroma(persist_directory=persist_directory, embedding_function=embedding_function, )
-
+    if len(vector_store.get()['ids']) > 0:
+        return vector_store, tokenizer
+    
     # Test d'ajout de documents
-
     uuids = [str(uuid.uuid4()) for _ in range(len(documents))]
     vector_store.add_documents(documents=documents, ids=uuids)
- #   print(f"Chroma DB is created. {len(vector_store)} documents are loaded.")
+    # print(f"Chroma DB is created. {len(vector_store)} documents are loaded.")
     
     return vector_store, tokenizer
 

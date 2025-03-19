@@ -31,8 +31,7 @@ class Recipe:
     def make_document(self):            
         self.uuid = str(uuid.uuid4())
         self.document = Document(
-            page_content=(self.make_str_recipe()).\
-                replace('\t', ' ').replace('\n', ' ').replace('  ', ' '),
+            page_content=(self.make_str_recipe()),
             metadata={'uuid': self.uuid, 'name': self.name})
     
 
@@ -45,7 +44,13 @@ class Recipe:
         if self.geography is not None:
             self.geography = [tag.replace('кухня', '').strip() for tag in self.geography]
         if self.diet is not None:
-            self.diet = [tag.replace('рецепты', '').replace('питание', '').replace('для', '').strip() for tag in self.diet]
+            self.diet = [tag.replace('рецепты', '').replace('питание', '').replace('для', '').replace('блюда', '').strip() for tag in self.diet]
+        if self.diet is not None:
+            self.diet = [tag.replace('рецепты', '').replace('питание', '').replace('для', '').replace('блюда', '').strip() for tag in self.diet]
+        if self.occasions is not None:
+            self.occasions = [tag.replace('рецепты', '').replace('питание', '').replace('для', '').replace('блюда', '').strip() for tag in self.diet]
+        
+    
             
 
 
@@ -57,6 +62,9 @@ class Recipe:
             if 'пп' in set(self.diet):
                 self.diet.append('полезный')
                 self.diet.append('здоровый')     
+        if self.occasions is not None:
+            if 'на скорую руку' in set(self.occasions):
+                self.occasions.append('быстрый')
 
     def standardize_time(self):
         if self.time is None:
@@ -87,8 +95,8 @@ class Recipe:
             res = self.name + "\n\n"
         else:
             res = ""
-        if self.description is not None:
-            res += "\n".join(self.description) + ".\n\n"
+        # if self.description is not None:
+        #     res += "\n".join(self.description) + ".\n\n"
         if self.recipeYield is not None:
             res += self.keys_dict["recipeYield"] + ": " + make_str(self.recipeYield) + ".\n"
         if self.ingridients is not None:
@@ -228,12 +236,12 @@ class Recipe:
 
 
 class RecipesProject():
-    def __init__(self, resipes=None, knowledgeGraph=None, tags=None, vectorStore=None, oneWordTags=None):
+    def __init__(self, recipes=None, knowledgeGraph=None, tags=None, vectorStore=None, oneWordTags=None):
         
-        if resipes is None:
-            self.resipes = None
+        if recipes is None:
+            self.recipes = None
         else:
-            self.resipes = resipes
+            self.recipes = recipes
         
         if knowledgeGraph is None:
             self.knowledgeGraph = None
@@ -255,8 +263,8 @@ class RecipesProject():
         else:
             self.oneWordTags = oneWordTags
 
-    def add_resipes_list(self, recipes_list):
-        self.resipes = recipes_list
+    def add_recipes_list(self, recipes_list):
+        self.recipes = recipes_list
         
     def add_knowledge_graph(self, graph):
         self.knowledgeGraph = graph
@@ -275,7 +283,10 @@ class RecipesProject():
         new_tags = enreach_query_with_relative_tags(query, self.oneWordTags)
         new_tags = " ".join(new_tags)
         if verbose:
-            print(f"New tags are added: {new_tags}")
+            if len(new_tags) > 0:
+                print(f"New tags are added: {new_tags}")
+            else:
+                print(f"New tags are not added")                
         res = query + " " + new_tags
         res = res.strip()
         return res

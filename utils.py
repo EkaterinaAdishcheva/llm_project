@@ -112,7 +112,7 @@ def read_recipes_pkl(file_name):
 
 def  filter_recipe(recipes, max_steps = 10, max_min=120, min_rating=4, min_votes=5):
     res = [recipe for recipe in recipes if util_select_recipe(recipe, max_steps, max_min, min_rating, min_votes)]
-    print(f"{len(res)} recipes is selected.")
+    print(f"{len(res)} recipes are selected.")
     return res
             
     
