@@ -49,3 +49,10 @@ lsof -i :11434
 ollama serve &
 
 kill -9 1317
+```
+
+
+```
+
+pip install llama-cpp-python
+```
