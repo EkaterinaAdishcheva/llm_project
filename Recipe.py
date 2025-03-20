@@ -29,10 +29,10 @@ class Recipe:
             self.add_tags()
 
     def make_document(self):            
-        self.uuid = str(uuid.uuid4())
+        self.display = self.make_str_recipe()
         self.document = Document(
-            page_content=(self.make_str_recipe()),
-            metadata={'uuid': self.uuid, 'name': self.name})
+            page_content=(self.make_str_recipe_db()),
+            metadata={'id': self.id, 'name': self.name})
     
 
     def display(self):
@@ -40,31 +40,43 @@ class Recipe:
             print(f"{attr}: {getattr(self, attr)}")
 
 
-    def clean_tags(self):        
-        if self.geography is not None:
-            self.geography = [tag.replace('кухня', '').strip() for tag in self.geography]
-        if self.diet is not None:
-            self.diet = [tag.replace('рецепты', '').replace('питание', '').replace('для', '').replace('блюда', '').strip() for tag in self.diet]
-        if self.diet is not None:
-            self.diet = [tag.replace('рецепты', '').replace('питание', '').replace('для', '').replace('блюда', '').strip() for tag in self.diet]
-        if self.occasions is not None:
-            self.occasions = [tag.replace('рецепты', '').replace('питание', '').replace('для', '').replace('блюда', '').strip() for tag in self.diet]
-        
-    
+    def clean_tags(self):
+        for attr in ATTRIBUTES_ORDER:
+            if attr in self.__dict__.keys():
+                tags = getattr(self, attr)
+                if tags is not None:
+                    if attr == 'ingridients':
+                        new_tags = [(tag[0].\
+                                    replace('кухня', '').replace('рецепты', '').\
+                                    replace('питание', '').replace('для', '').\
+                                    replace('блюда', '').strip(), tag[1]) for tag in tags]
+                    else:
+                        new_tags = [tag.\
+                                    replace('кухня', '').replace('рецепты', '').\
+                                    replace('питание', '').replace('для', '').\
+                                    replace('блюда', '').strip() for tag in tags]
+            
+                    setattr(self, attr, new_tags)
             
 
 
     def add_tags(self):
-        if self.occasions is not None:
-            if 'для детей' in set(self.occasions):
-                self.occasions.append('детский')
-        if self.diet is not None:
-            if 'пп' in set(self.diet):
-                self.diet.append('полезный')
-                self.diet.append('здоровый')     
-        if self.occasions is not None:
-            if 'на скорую руку' in set(self.occasions):
-                self.occasions.append('быстрый')
+        for attr in ATTRIBUTES_ORDER:
+            if attr == 'ingridients':
+                continue
+            if attr in self.__dict__.keys():
+                tags = getattr(self, attr)
+                if tags is not None:
+                    new_tags = tags.copy()
+    
+                    if 'для детей' in set(tags):
+                        new_tags.append('детский')
+                    if 'пп' in set(tags):
+                        new_tags.append('полезный')
+                        new_tags.append('здоровый')
+                    if 'на скорую руку' in set(tags):
+                        new_tags.append('быстрый')
+                    setattr(self, attr, new_tags)
 
     def standardize_time(self):
         if self.time is None:
@@ -107,10 +119,26 @@ class Recipe:
             res += "\n" + self.keys_dict["steps"] + "\n"
             for n, step in enumerate(self.steps):
                 res += "\t" + str(n + 1) + ". "  +  step + ".\n"
-        for key in self.keys_dict_order[5:]:
+        for key in self.keys_dict_order[5:10]:
             if key in self.__dict__.keys():
                 val = getattr(self, key)
-                res += self.keys_dict[key] + ": " + make_str(val) + ".\n"
+                if val is not None:
+                    res += self.keys_dict[key] + ": " + make_str(val) + ".\n"
+        return res
+
+    def make_str_recipe_db(self):
+        if self.name is not None:
+            res = self.name + " "
+        else:
+            res = ""
+        # if self.description is not None:
+        #     res += "\n".join(self.description) + ".\n\n"
+        # if self.recipeYield is not None:
+        #     res += self.keys_dict["recipeYield"] + ": " + make_str(self.recipeYield) + ".\n"
+        if self.ingridients is not None:
+            res += ", ".join([ing[0] for ing in self.ingridients])
+        if self.steps is not None:
+            res += ", ".join(self.steps)
         return res
 
     def add_features(self, recipe):

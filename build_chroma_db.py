@@ -62,9 +62,7 @@ def build_chroma_db(
     text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size, chunk_overlap=chunk_overlap, length_function=length_function
     )
-
-    documents = [recipe.document.replace('\t', ' ').replace('\n', ' ').replace('  ', ' ')
-                 for recipe in recipes_list]
+    documents = [recipe.document for recipe in recipes_list]
 
     documents = text_splitter.split_documents(documents)
 
@@ -88,7 +86,7 @@ def build_chroma_db(
         return vector_store, tokenizer
     
     # Test d'ajout de documents
-    uuids = [str(uuid.uuid4()) for _ in range(len(documents))]
+    uuids = ['chunk_' + str(uuid.uuid4()) for _ in range(len(documents))]
     vector_store.add_documents(documents=documents, ids=uuids)
     # print(f"Chroma DB is created. {len(vector_store)} documents are loaded.")
     
@@ -112,5 +110,4 @@ def requst_chroma_db(vector_store, tokenizer, query, device, k=5):
         query,
         k=k,
     )
-    
     return results

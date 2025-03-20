@@ -112,8 +112,8 @@ def lemmatize_tags(tags):
 
 def add_recipes_to_graph(G, recipes_list):
     for recipe in recipes_list:
-        G.add_node(recipe.uuid, node_type="recipe")
-        G.nodes[recipe.uuid]['name'] = recipe.name
+        G.add_node(recipe.id, node_type="recipe")
+        G.nodes[recipe.id]['name'] = recipe.name
     
 
 def add_tags_to_graph(G, tags):
@@ -130,13 +130,13 @@ def add_edges_to_graph(G, recipes_list, tags):
                     if attribute != 'ingridients':
                         if tag in tags: 
                             if G.has_node(tags[tag]['lemma']):
-                                G.add_edge(recipe.uuid, tags[tag]['lemma'])
+                                G.add_edge(recipe.id, tags[tag]['lemma'])
                             else:
                                 print(f"Node {tags[tag]['lemma']} does not exist")
                     else:
                         if tag[0] in tags: 
                             if G.has_node(tags[tag[0]]['lemma']):
-                                G.add_edge(recipe.uuid, tags[tag[0]]['lemma'])
+                                G.add_edge(recipe.id, tags[tag[0]]['lemma'])
                             else:
                                 print(f"Node {tags[tag]['lemma']} does not exist")
 

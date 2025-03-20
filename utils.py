@@ -141,8 +141,9 @@ def util_select_recipe(recipe, max_steps = 10, max_min=120, min_rating=4, min_vo
 def make_recipes(recipes, output_file=None):
     result = []
 
-    for rec in recipes:
+    for num, rec in enumerate(recipes):
         _rec = Recipe(rec)
+        _rec.id = "recipe_" + str(num)
         _rec.standardize_time()
         _rec.make_document()
         result.append(_rec)
