@@ -14,3 +14,10 @@ chmod 400 /root/.ssh/id_rsa
 curl -fsSL https://ollama.com/install.sh | sh
 ollama serve &
 ollama pull mistral
+
+
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+
+apt update
+apt install -y lsof
