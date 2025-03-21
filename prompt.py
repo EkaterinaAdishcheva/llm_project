@@ -7,11 +7,6 @@ def create_chat_history():
     chat_history = ChatMessageHistory()
     return chat_history
 
-# chat_history.add_user_message("I want to cook something quick with shrimp and pasta.")
-# chat_history.add_ai_message("How about a garlic shrimp pasta?")
-# chat_history.add_user_message("Do you have a recipe with garlic and shrimp?")
-
-
 # Convert chat history to a formatted string
 def formatted_chat_history(chat_history):
     res = "\n".join([
@@ -38,7 +33,7 @@ TEMPLATE = """
 Четко форматируйте ответы, включая:
 1. **Название**: название рецепта или предложения.
 2. **Ингредиенты**: перечислите ингредиенты с количеством.
-3. **Инструкции**: пошаговый процесс.
+3. **Инструкция**: пошаговый процесс.
 4. **Советы/Альтернативы**: предоставьте полезные советы или альтернативы, если определенные ингредиенты недоступны.
 
 ---

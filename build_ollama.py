@@ -13,6 +13,7 @@ def build_model(model=MODEL_NAME):
         top_k=40,
         top_p=0.6,
         temperature=0.5,
+        # format="json",
     )
     return llm
 

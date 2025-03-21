@@ -9,6 +9,8 @@ transformers
 torch
 langchain_chroma
 pip install -U langchain-community
+pip install evaluate
+pip install bert_score
 
 
 # python -m spacy download ru_core_news_md
