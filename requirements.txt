@@ -1,18 +1,16 @@
-pip install bs4 tqdm
-pip install langchain 
-pip install langchain_ollama
-pip install spacy
-pip install networkx
+bs4
+tqdm
+langchain 
+langchain_ollama
+spacy
+networkx
 pymorphy3
 fuzzywuzzy
 transformers
 torch
 langchain_chroma
-pip install -U langchain-community
-pip install evaluate
-pip install bert_score
-
-
-# python -m spacy download ru_core_news_md
-python -m spacy download ru_core_news_sm
-python -m spacy validate
+langchain-community
+evaluate
+bert_score
+rouge_score
+nltk

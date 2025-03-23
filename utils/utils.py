@@ -5,7 +5,7 @@ import re
 from tqdm import tqdm
 import pickle
 
-from Recipe import Recipe
+from utils.Recipe import Recipe
 
 
 
@@ -89,7 +89,7 @@ def make_data_set(dir_name):
     return results
 
 
-def save_recipes_pkl(recipes_list, file_name):
+def save_pkl(recipes_list, file_name):
     """
         saves recipes list to file       
     """
@@ -97,7 +97,7 @@ def save_recipes_pkl(recipes_list, file_name):
         pickle.dump(recipes_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
         
         
-def read_recipes_pkl(file_name):
+def read_pkl(file_name):
     """
         saves recipes list to file       
     """

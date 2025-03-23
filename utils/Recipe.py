@@ -1,7 +1,7 @@
 import re
 import uuid
 from langchain_core.documents import Document
-from build_knowledge_graph import query_graph, ATTRIBUTES_ORDER, enreach_query_with_relative_tags
+from utils.build_knowledge_graph import query_graph, ATTRIBUTES_ORDER, enreach_query_with_relative_tags
 
 def make_str(obj):
     res = ''

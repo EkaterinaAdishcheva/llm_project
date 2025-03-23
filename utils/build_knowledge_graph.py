@@ -3,6 +3,7 @@ import spacy
 from tqdm import tqdm
 import re
 import networkx as nx
+import pickle
 
 from pymorphy3 import MorphAnalyzer
 from nltk.corpus import stopwords
@@ -175,3 +176,7 @@ def query_graph(query, graph, tags, min_number=5, verbose=False):
                 return answer_new, answer
             answer = answer_new
     return answer_new, answer
+
+def save_graph(graph, file_name):
+    with open(file_name, 'wb') as f:
+        pickle.dump(graph, f, pickle.HIGHEST_PROTOCOL)
