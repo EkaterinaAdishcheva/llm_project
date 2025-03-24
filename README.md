@@ -7,6 +7,8 @@
 python -m venv llm_venv
 source llm_venv/bin/activate
 pip install -r requerments.txt
+python -m spacy download ru_core_news_sm
+python -m spacy validate
 ```
 
 ### 2. Install local LLM Ollama + mistral
