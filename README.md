@@ -1,26 +1,27 @@
 # LLM project
 
-## Step 1: Simple LLM w/o RAG
+## Recipe Adviser
 
-### 1. Enviroment
+### Set the enviroment
 ```
 python -m venv llm_venv
 source llm_venv/bin/activate
-pip install ipykernel
-python -m ipykernel install --user --name=llm_venv --display-name "Python (llm_venv)"
+pip install -r requerments.txt
 ```
+
 ### 2. Install local LLM Ollama + mistral
 ```
 curl -fsSL https://ollama.com/install.sh | sh
 ollama serve &
 ollama pull mistral
 ```
-### 3. Restart ollama
-```
-apt update
-apt install -y lsof
-lsof -i :11434
-ollama serve &
 
-kill -9 1317
+### 3. Create RAG
+```
+python main.py
+```
+
+### 3. Run LLM and make queries
+```
+python main.py
 ```
