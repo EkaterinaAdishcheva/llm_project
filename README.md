@@ -24,6 +24,4 @@ python main.py
 ```
 
 ### 3. Run LLM and make queries
-```
-python main.py
-```
+chat.ipynb
